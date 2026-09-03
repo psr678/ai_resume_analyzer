@@ -1,0 +1,7 @@
+test_resume,file_format,expected_top_role,actual_top_role,match_score,skills_found_count,comments
+Resume A (Data Analyst),PDF,Data Analyst,Data Analyst,80.0%,9,Correctly ranked Data Analyst first; SQL/Excel/Power BI/Pandas all detected.
+Resume A (Data Analyst),DOCX,Data Analyst,Data Analyst,80.0%,9,Identical result to PDF version -- confirms parser consistency across formats.
+Resume B (ML Engineer),PDF,Machine Learning Engineer,Machine Learning Engineer,77.1%,11,Correctly ranked ML Engineer first; scikit-learn/FastAPI/Docker/MLflow all detected.
+Resume B (ML Engineer),DOCX,Machine Learning Engineer,Machine Learning Engineer,77.1%,11,Identical result to PDF version -- confirms parser consistency across formats.
+Resume C (NLP Engineer),PDF,NLP Engineer,NLP Engineer,81.2%,9,Correctly ranked NLP Engineer first; Transformers/Hugging Face/spaCy all detected.
+Resume C (NLP Engineer),DOCX,NLP Engineer,NLP Engineer,81.2%,9,Identical result to PDF version -- confirms parser consistency across formats.

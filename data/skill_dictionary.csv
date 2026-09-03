@@ -1,0 +1,51 @@
+skill,category,aliases
+python,Programming,
+java,Programming,
+c++,Programming,cpp
+c#,Programming,csharp
+javascript,Programming,js
+.net,Programming,dotnet
+r,Programming,
+sql,Databases,
+postgresql,Databases,postgres
+mongodb,Databases,
+sqlite,Databases,
+pandas,Data Handling,
+numpy,Data Handling,
+excel,Data Handling,ms excel
+power bi,Data Handling,powerbi
+tableau,Data Handling,
+data visualization,Data Handling,
+statistics,Data Handling,
+machine learning,Machine Learning,ml
+deep learning,Machine Learning,dl
+scikit-learn,Machine Learning,sklearn
+tensorflow,Machine Learning,
+pytorch,Machine Learning,
+nlp,Machine Learning,natural language processing
+transformers,Machine Learning,
+hugging face,Machine Learning,huggingface
+spacy,Machine Learning,
+opencv,Machine Learning,
+cnn,Machine Learning,convolutional neural network
+yolo,Machine Learning,
+llm,Machine Learning,large language model
+rag,Machine Learning,retrieval augmented generation
+mlflow,Machine Learning,
+aws,Cloud,amazon web services
+azure,Cloud,
+gcp,Cloud,google cloud
+docker,Cloud,
+kubernetes,Cloud,k8s
+cloud deployment,Cloud,
+ci/cd,Cloud,cicd
+fastapi,Tools & Frameworks,
+django,Tools & Frameworks,
+flask,Tools & Frameworks,
+rest apis,Tools & Frameworks,rest api
+apis,Tools & Frameworks,api
+git,Tools & Frameworks,
+github,Tools & Frameworks,
+streamlit,Tools & Frameworks,
+matplotlib,Tools & Frameworks,
+plotly,Tools & Frameworks,

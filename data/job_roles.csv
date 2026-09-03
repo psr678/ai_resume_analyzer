@@ -1,0 +1,9 @@
+role,required_skills,description
+Data Analyst,"python, sql, excel, pandas, power bi, data visualization, statistics","Analyzes business data to find trends, builds dashboards and reports, and supports data-driven decision making using SQL, Excel, and BI tools."
+Machine Learning Engineer,"python, machine learning, scikit-learn, fastapi, docker, pandas, numpy, mlflow","Builds, trains, and deploys machine learning models into production systems, with a focus on scalable APIs and reproducible pipelines."
+AI Engineer,"python, deep learning, llm, rag, apis, pytorch, tensorflow, cloud deployment","Designs and integrates AI systems including large language models, retrieval-augmented generation pipelines, and API-based AI services."
+NLP Engineer,"python, nlp, transformers, hugging face, spacy, deep learning, machine learning","Builds natural language processing systems such as text classification, sentiment analysis, and language models using modern NLP libraries."
+Computer Vision Engineer,"python, opencv, cnn, yolo, deep learning, pytorch, tensorflow","Develops image and video analysis systems including object detection, recognition, and tracking using deep learning frameworks."
+Data Scientist,"python, machine learning, statistics, pandas, numpy, scikit-learn, sql, data visualization","Applies statistical analysis and machine learning to extract insights and build predictive models from structured and unstructured data."
+Backend Developer,"python, sql, fastapi, django, flask, rest apis, docker, postgresql, git","Builds and maintains server-side application logic, APIs, and databases that power web and mobile applications."
+Cloud Engineer,"python, aws, azure, gcp, docker, kubernetes, cloud deployment, ci/cd","Designs, deploys, and manages cloud infrastructure and deployment pipelines for scalable applications."
