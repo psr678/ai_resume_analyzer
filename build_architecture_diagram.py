@@ -5,6 +5,7 @@ from matplotlib.patches import FancyBboxPatch, FancyArrowPatch
 steps = [
     ("Upload PDF/DOCX Resume", "app.py (Streamlit)"),
     ("Extract Resume Text", "resume_parser.py"),
+    ("Detect Resume Sections\n(Education, Skills, Experience, Projects)", "section_detector.py"),
     ("Clean & Normalize Text", "text_cleaner.py"),
     ("Identify Skills\n(keyword matching)", "skill_extractor.py + skill_dictionary.csv"),
     ("Load Job-Role Requirements", "job_matcher.py + job_roles.csv"),

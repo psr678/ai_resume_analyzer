@@ -6,3 +6,6 @@ numpy
 scikit-learn
 plotly
 python-dotenv
+fastapi
+uvicorn[standard]
+python-multipart

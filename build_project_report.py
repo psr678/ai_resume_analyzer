@@ -54,11 +54,12 @@ story.append(Paragraph(
     "a controlled 50-skill dictionary, <b>TF-IDF vectorization + cosine similarity</b> for text-level "
     "matching, blended with a direct skill-overlap ratio (60% skill overlap + 40% TF-IDF) for an "
     "interpretable match score, and a <b>rule-based learning roadmap</b> for missing skills. This runs "
-    "fully offline with no external API key required.", styles['Bodys']))
+    "fully offline with no external API key required. One optional advanced feature was also added: "
+    "<b>resume section detection</b> (education/skills/experience/projects), also fully offline.", styles['Bodys']))
 
 story.append(Paragraph("4. Architecture / Workflow", styles['H2s']))
-story.append(Image('architecture_diagram.png', width=3.6*inch, height=6.7*inch))
-story.append(Paragraph("Pipeline: Upload -> Extract -> Clean -> Extract Skills -> Load Job Roles -> Compare -> Score -> Recommend -> Roadmap -> Dashboard.", styles['Caption']))
+story.append(Image('architecture_diagram.png', width=3.4*inch, height=7.1*inch))
+story.append(Paragraph("Pipeline: Upload -> Extract -> Detect Sections -> Clean -> Extract Skills -> Load Job Roles -> Compare -> Score -> Recommend -> Roadmap -> Dashboard.", styles['Caption']))
 
 story.append(PageBreak())
 
@@ -98,8 +99,9 @@ story.append(Spacer(1, 6))
 story.append(Paragraph(
     "<b>Result: 6/6 test cases passed</b> -- the expected top role matched the actual top role in "
     "every case, and PDF/DOCX results were identical for each resume, confirming parser consistency "
-    "across formats. See tests/test_cases.csv and tests/evaluation_notes.md for full details "
-    "(extraction quality, skill precision/recall, score consistency, fairness, usability).", styles['Bodys']))
+    "across formats. All 4 required sections (Skills, Experience, Projects, Education) were also "
+    "correctly detected in every test case. See tests/test_cases.csv and tests/evaluation_notes.md "
+    "for full details (extraction quality, skill precision/recall, score consistency, fairness, usability).", styles['Bodys']))
 
 story.append(Paragraph("7. Responsible AI Rules Applied", styles['H2s']))
 rules = [
@@ -112,16 +114,30 @@ rules = [
 ]
 story.append(ListFlowable([ListItem(Paragraph(r, styles['Bodys']), bulletColor=colors.HexColor('#2c5a7c')) for r in rules], bulletType='bullet', leftIndent=14))
 
-story.append(Paragraph("8. Limitations & Future Improvements", styles['H2s']))
+story.append(Paragraph("8. Optional Advanced Features Implemented", styles['H2s']))
+adv_features = [
+    "<b>Resume Section Detection</b> (section_detector.py) -- splits resumes into Education/Skills/"
+    "Experience/Projects sections; verified correct on all 6 test cases.",
+    "<b>Job-Role Dashboard with Charts</b> (job_dashboard.py) -- required-skill-count and "
+    "skill-category-composition charts across all 8 roles, viewable without uploading a resume.",
+    "<b>FastAPI Backend</b> (api.py) -- REST API exposing the same pipeline (/analyze, /roadmap, "
+    "/job-roles, /health); tested with FastAPI TestClient and a live uvicorn + curl session.",
+    "<b>Docker Deployment</b> (Dockerfile, Dockerfile.api, docker-compose.yml) -- containerizes both "
+    "the Streamlit app and the FastAPI backend. Note: written and reviewed carefully but not "
+    "build-tested (no Docker daemon in the development sandbox) -- verify locally before relying on it.",
+]
+story.append(ListFlowable([ListItem(Paragraph(f, styles['Bodys']), bulletColor=colors.HexColor('#2c5a7c')) for f in adv_features], bulletType='bullet', leftIndent=14))
+
+story.append(Paragraph("9. Limitations & Future Improvements", styles['H2s']))
 story.append(Paragraph(
     "Keyword-matching skill extraction is bounded by the 50-skill dictionary (a skill mentioned under "
     "an unlisted name/spelling won't be detected); scanned/image-only PDFs cannot be read (no OCR); "
     "TF-IDF/cosine similarity is bag-of-words and doesn't capture semantic meaning the way Sentence "
     "Transformers would. Future improvements: semantic matching with Sentence Transformers, LLM-based "
-    "resume feedback (optional, requires an API key), resume section detection, and FastAPI/Docker "
-    "deployment for a production backend.", styles['Bodys']))
+    "resume feedback (optional, requires an API key), and a database layer if resume storage is ever "
+    "required (intentionally not implemented now -- see Responsible AI notes).", styles['Bodys']))
 
-story.append(Paragraph("9. Conclusion", styles['H2s']))
+story.append(Paragraph("10. Conclusion", styles['H2s']))
 story.append(Paragraph(
     "This project delivers a complete, working, offline resume-to-job-role matching pipeline covering "
     "every required module: upload, text extraction, cleaning, skill extraction (50 skills, well above "

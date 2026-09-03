@@ -21,8 +21,10 @@ import plotly.express as px
 import streamlit as st
 
 from resume_parser import extract_resume_text, ResumeParseError
+from section_detector import detect_sections
 from skill_extractor import load_skill_dictionary, extract_skills
 from job_matcher import load_job_roles, match_resume_to_roles, recommend_top_roles
+from job_dashboard import figure_required_skill_counts, figure_role_category_breakdown
 from roadmap_generator import generate_roadmap, format_roadmap_text, ROADMAP_DISCLAIMER
 
 st.set_page_config(page_title="AI Resume Analyzer", page_icon="\U0001F4C4", layout="wide")
@@ -89,6 +91,19 @@ def main():
     skill_dict, job_roles = _load_reference_data()
 
     # ------------------------------------------------------------------
+    # Optional advanced feature: Job-Role Dashboard (no resume needed)
+    # ------------------------------------------------------------------
+    with st.expander("\U0001F4CA Explore Job Roles Dashboard (no resume needed)", expanded=False):
+        st.caption(
+            "Browse the reference job-role data itself -- useful for deciding which "
+            "role to target before you even upload a resume."
+        )
+        st.plotly_chart(figure_required_skill_counts(job_roles), use_container_width=True)
+        st.plotly_chart(figure_role_category_breakdown(job_roles, skill_dict), use_container_width=True)
+
+    st.divider()
+
+    # ------------------------------------------------------------------
     # Module 1: Resume Upload
     # ------------------------------------------------------------------
     st.header("1. Upload Your Resume")
@@ -113,11 +128,36 @@ def main():
         st.stop()
 
     # ------------------------------------------------------------------
+    # Optional advanced feature: Resume Section Detection
+    # ------------------------------------------------------------------
+    st.header("2. Detected Resume Sections")
+    sections = detect_sections(resume_text)
+    section_labels = {
+        "header": "Header / Summary", "summary": "Summary", "education": "Education",
+        "skills": "Skills", "experience": "Experience", "projects": "Projects",
+        "certifications": "Certifications",
+    }
+    detected_names = [s for s in sections if s != "header"]
+    if detected_names:
+        st.success(f"Detected {len(detected_names)} section(s): "
+                   f"{', '.join(section_labels.get(s, s).title() for s in detected_names)}")
+    else:
+        st.info("No standard section headings (e.g. 'Skills', 'Experience') were detected -- "
+                "this resume may use a non-standard layout. Skill extraction below still runs "
+                "on the full resume text regardless.")
+
+    if sections:
+        tabs = st.tabs([section_labels.get(s, s).title() for s in sections])
+        for tab, section_name in zip(tabs, sections):
+            with tab:
+                st.text(sections[section_name])
+
+    # ------------------------------------------------------------------
     # Module 3: Skill Extraction
     # ------------------------------------------------------------------
     extracted = extract_skills(resume_text, skill_dict)
 
-    st.header("2. Extracted Skills")
+    st.header("3. Extracted Skills")
     if not extracted["flat_list"]:
         st.warning(
             "No skills from our skill dictionary were found in this resume. "
@@ -135,7 +175,7 @@ def main():
     # ------------------------------------------------------------------
     # Module 5: Matching and Recommendation
     # ------------------------------------------------------------------
-    st.header("3. Job Role Matching")
+    st.header("4. Job Role Matching")
     match_results = match_resume_to_roles(resume_text, extracted["flat_list"], job_roles)
 
     fig = px.bar(
@@ -155,7 +195,7 @@ def main():
     # ------------------------------------------------------------------
     # Module 6: Skill-Gap Analysis (for a user-selected target role)
     # ------------------------------------------------------------------
-    st.header("4. Skill-Gap Analysis and Learning Roadmap")
+    st.header("5. Skill-Gap Analysis and Learning Roadmap")
     target_role = st.selectbox("Select a target role for detailed analysis:", job_roles["role"].tolist())
 
     target_row = match_results[match_results["role"] == target_role].iloc[0]
@@ -186,7 +226,7 @@ def main():
     # ------------------------------------------------------------------
     # Module 7: Downloadable Report
     # ------------------------------------------------------------------
-    st.header("5. Download Your Report")
+    st.header("6. Download Your Report")
     report_text = build_report_text(target_role, target_row, extracted, roadmap)
     st.download_button(
         label="Download Analysis Report (.txt)",

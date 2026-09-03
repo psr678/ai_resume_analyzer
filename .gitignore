@@ -8,6 +8,3 @@ venv/
 reports/*.txt
 reports/*.pdf
 !reports/.gitkeep
-.copilot-specs-cache/
-.agents/
-.claude/
