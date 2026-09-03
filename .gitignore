@@ -8,3 +8,5 @@ venv/
 reports/*.txt
 reports/*.pdf
 !reports/.gitkeep
+.agents/
+.claude/
