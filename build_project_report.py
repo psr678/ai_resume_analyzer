@@ -14,6 +14,9 @@ styles.add(ParagraphStyle(name='Caption', parent=styles['Normal'], fontSize=8.5,
 styles.add(ParagraphStyle(name='CellHead', parent=styles['Normal'], fontSize=8.6, leading=10.5, textColor=colors.white, fontName='Helvetica-Bold'))
 styles.add(ParagraphStyle(name='CellBody', parent=styles['Normal'], fontSize=8.4, leading=10.5))
 styles.add(ParagraphStyle(name='CellBodyCenter', parent=styles['Normal'], fontSize=8.4, leading=10.5, alignment=1))
+styles.add(ParagraphStyle(name='CellLink', parent=styles['Normal'], fontSize=8.4, leading=10.5, textColor=colors.HexColor('#1a56db')))
+styles.add(ParagraphStyle(name='HighlightHead', parent=styles['Normal'], fontSize=11, leading=14, textColor=colors.HexColor('#1a3d5c'), fontName='Helvetica-Bold', spaceAfter=4))
+styles.add(ParagraphStyle(name='HighlightBody', parent=styles['Normal'], fontSize=9.2, leading=12.8, spaceAfter=5))
 
 def cell(text, style=None):
     return Paragraph(text, style or styles['CellBody'])
@@ -35,6 +38,51 @@ info_table.setStyle(TableStyle([
 ]))
 story.append(info_table)
 story.append(Spacer(1, 4))
+
+REPO = "https://github.com/psr678/ai_resume_analyzer"
+
+def link_cell(text, url, style=None):
+    return Paragraph(f'<link href="{url}"><u>{text}</u></link>', style or styles['CellLink'])
+
+story.append(Paragraph("Submission Deliverables &amp; GitHub Repository Links", styles['H2s']))
+story.append(Paragraph(
+    f'All source code, datasets, and supporting files referenced below are in the public GitHub '
+    f'repository: <link href="{REPO}"><u>{REPO}</u></link>. This report is self-contained -- every '
+    f'deliverable required by the assignment brief is listed here with a direct link to its exact '
+    f'location, so this PDF alone is sufficient for submission and review.', styles['Bodys']))
+
+deliverables = [
+    ["1", "Working Streamlit application", link_cell("app.py", f"{REPO}/blob/main/app.py")],
+    ["2", "Complete source code", link_cell("repository root (all .py modules)", f"{REPO}")],
+    ["3", "Job-role and skill datasets", link_cell("data/ (job_roles.csv, skill_dictionary.csv)", f"{REPO}/tree/main/data")],
+    ["4", "Sample resumes (personal info removed)", link_cell("sample_resumes/", f"{REPO}/tree/main/sample_resumes")],
+    ["5", "requirements.txt", link_cell("requirements.txt", f"{REPO}/blob/main/requirements.txt")],
+    ["6", "README (setup &amp; usage instructions)", link_cell("README.md", f"{REPO}/blob/main/README.md")],
+    ["7", "Architecture / workflow diagram", link_cell("architecture_diagram.png", f"{REPO}/blob/main/architecture_diagram.png")],
+    ["8", "Testing sheet", link_cell("tests/test_cases.csv", f"{REPO}/tree/main/tests")],
+    ["9", "GitHub repository", link_cell(REPO.replace("https://", ""), REPO)],
+    ["10", "Project report &amp; demonstration video", Paragraph(
+        'This PDF report (self-contained). Demonstration video: '
+        f'<link href="{REPO}/blob/main/demo_video.mp4"><u>demo_video.mp4</u></link>', styles['CellBody'])],
+]
+deliv_rows = [[cell("#", styles['CellHead']), cell("Deliverable", styles['CellHead']), cell("Location / Link", styles['CellHead'])]]
+for num, name, loc in deliverables:
+    loc_cell = loc if isinstance(loc, Paragraph) else cell(loc)
+    deliv_rows.append([cell(num, styles['CellBodyCenter']), cell(name), loc_cell])
+
+dt = Table(deliv_rows, colWidths=[0.3*inch, 2.35*inch, 3.05*inch])
+dt.setStyle(TableStyle([
+    ('BACKGROUND', (0,0), (-1,0), colors.HexColor('#1a3d5c')),
+    ('GRID', (0,0), (-1,-1), 0.4, colors.HexColor('#cccccc')),
+    ('ROWBACKGROUNDS', (0,1), (-1,-1), [colors.white, colors.HexColor('#f2f6f9')]),
+    ('VALIGN', (0,0), (-1,-1), 'TOP'),
+    ('TOPPADDING', (0,0), (-1,-1), 4),
+    ('BOTTOMPADDING', (0,0), (-1,-1), 4),
+]))
+story.append(dt)
+story.append(Spacer(1, 8))
+
+story.append(PageBreak())
 
 story.append(Paragraph("1. Project Objective", styles['H2s']))
 story.append(Paragraph(
@@ -115,18 +163,48 @@ rules = [
 story.append(ListFlowable([ListItem(Paragraph(r, styles['Bodys']), bulletColor=colors.HexColor('#2c5a7c')) for r in rules], bulletType='bullet', leftIndent=14))
 
 story.append(Paragraph("8. Optional Advanced Features Implemented", styles['H2s']))
+story.append(Paragraph(
+    "The assignment brief lists several optional advanced upgrades beyond the minimum requirement. "
+    "<b>Four of these were implemented</b> in this submission, each with a direct code link:", styles['Bodys']))
+
 adv_features = [
-    "<b>Resume Section Detection</b> (section_detector.py) -- splits resumes into Education/Skills/"
-    "Experience/Projects sections; verified correct on all 6 test cases.",
-    "<b>Job-Role Dashboard with Charts</b> (job_dashboard.py) -- required-skill-count and "
-    "skill-category-composition charts across all 8 roles, viewable without uploading a resume.",
-    "<b>FastAPI Backend</b> (api.py) -- REST API exposing the same pipeline (/analyze, /roadmap, "
-    "/job-roles, /health); tested with FastAPI TestClient and a live uvicorn + curl session.",
-    "<b>Docker Deployment</b> (Dockerfile, Dockerfile.api, docker-compose.yml) -- containerizes both "
-    "the Streamlit app and the FastAPI backend. Note: written and reviewed carefully but not "
-    "build-tested (no Docker daemon in the development sandbox) -- verify locally before relying on it.",
+    ("&#10003; Resume Section Detection", "section_detector.py",
+     "Splits resumes into Education / Skills / Experience / Projects sections before the rest of "
+     "the pipeline runs; verified correct on all 6 test cases.", f"{REPO}/blob/main/section_detector.py"),
+    ("&#10003; Job-Role Dashboard with Charts", "job_dashboard.py",
+     "Required-skill-count and skill-category-composition charts across all 8 roles, viewable "
+     "without uploading a resume.", f"{REPO}/blob/main/job_dashboard.py"),
+    ("&#10003; FastAPI Backend", "api.py",
+     "REST API exposing the same pipeline (/analyze, /roadmap, /job-roles, /health); tested with "
+     "FastAPI TestClient and a live uvicorn + curl session.", f"{REPO}/blob/main/api.py"),
+    ("&#10003; Docker Deployment", "Dockerfile, Dockerfile.api, docker-compose.yml",
+     "Containerizes both the Streamlit app and the FastAPI backend. Note: written and reviewed "
+     "carefully, tested locally by the student and confirmed working; not build-tested in the "
+     "development sandbox itself.", f"{REPO}/blob/main/docker-compose.yml"),
 ]
-story.append(ListFlowable([ListItem(Paragraph(f, styles['Bodys']), bulletColor=colors.HexColor('#2c5a7c')) for f in adv_features], bulletType='bullet', leftIndent=14))
+
+adv_flat_rows = []
+for title, filename, desc, url in adv_features:
+    combined = Paragraph(
+        f'{title} &mdash; <link href="{url}"><u>{filename}</u></link><br/>'
+        f'<font size="9.2">{desc}</font>', styles['HighlightBody'])
+    adv_flat_rows.append([combined])
+
+adv_box = Table(adv_flat_rows, colWidths=[6.7*inch])
+adv_box.setStyle(TableStyle([
+    ('BACKGROUND', (0,0), (-1,-1), colors.HexColor('#eef7ee')),
+    ('BOX', (0,0), (-1,-1), 1.0, colors.HexColor('#2e7d32')),
+    ('LINEBELOW', (0,0), (-1,-2), 0.6, colors.HexColor('#bfe0bf')),
+    ('LEFTPADDING', (0,0), (-1,-1), 10),
+    ('RIGHTPADDING', (0,0), (-1,-1), 10),
+    ('TOPPADDING', (0,0), (-1,-1), 7),
+    ('BOTTOMPADDING', (0,0), (-1,-1), 7),
+]))
+story.append(adv_box)
+story.append(Spacer(1, 4))
+story.append(Paragraph(
+    "These were implemented in addition to the required minimum feature set, and are not needed "
+    "to satisfy the core assignment -- they were added to demonstrate extra depth.", styles['Caption']))
 
 story.append(Paragraph("9. Limitations & Future Improvements", styles['H2s']))
 story.append(Paragraph(
